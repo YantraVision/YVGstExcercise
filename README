@@ -1,3 +1,24 @@
-make
-sudo make install
-gst-launch-1.0 filesrc location=SampleVideo_1280x720_1mb.mp4 ! qtdemux name=demux demux. ! queue ! faad ! audioconvert ! audioresample ! autoaudiosink demux. ! queue ! avdec_h264 ! myfilter ! autovideosink
+# How to add and compile a sampe plugin on Ubuntu  
+
+The code is based on https://gitlab.freedesktop.org/gstreamer/gst-template.git. You are not required to download this package.
+The example plugin + template plugins are part of this repository. Below is the list of instructions to compile 
+
+1) cd <path to sample plugin repo>/gst-template/gst-plugin
+2) export GST_PLUGIN_PATH=/usr/local/lib
+3) ./autogen.sh
+4) cd src
+5) make
+6) sudo make install
+
+# Run with new plugin
+gst-launch-1.0 filesrc location=<path to video>/SampleVid.mp4 ! decodebin ! videoconvert ! myplugin ! autovideosink
+
+# Notes
+1) This is tested on ubunu 18.04.1 LTS and ubunut 16.04 LTS
+2) Changes to Makefile.am include 
+    a) addition lines for myplugin
+    b) replacing string "audiofilterexample" to "audiofiltertemplateplugin" to match the name in file gstaudiofilter.c GST_PLUGIN_DEFINE macro/function(3rd parameter). This change is required for ubuntu 18.04, but the name mismatch looks ok for ubuntu 16.04
+
+# other notes
+export GST_DEBUG=6 (enable log, debug, info, fixme, warning, error) refer https://gstreamer.freedesktop.org/documentation/tutorials/basic/debugging-tools.html
+video used is also part of this repo!
